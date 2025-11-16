@@ -12,11 +12,11 @@ class DataCollectionService(
     private val csvServicePowerSystemAvgRecord: CsvService<PowerSystemAvgRecord>
 ) {
     private val logger = LoggerFactory.getLogger(DataCollectionService::class.java)
-    private var lastInCsvMinutes1DK: String? = null
+    private var lastLoadedMinutes1DK: String? = null
 
     suspend fun start(pollingInterval: Long = 1000L, delayBetweenFetches: Long = 40_000L) {
 
-        if (lastInCsvMinutes1DK == null){
+        if (lastLoadedMinutes1DK == null){
             fetchData()
         }
 
@@ -65,7 +65,7 @@ class DataCollectionService(
     suspend fun pollApi() : Boolean{
         val pollMinutes1DK = latestOnApiMinutes1Dk() ?: return false
 
-        if (pollMinutes1DK > lastInCsvMinutes1DK!!){
+        if (pollMinutes1DK > lastLoadedMinutes1DK!!){
             return true
         }
 
@@ -82,7 +82,7 @@ class DataCollectionService(
 
         if (response.records.isNotEmpty()) {
             val latestRecord = response.records.first()
-            lastInCsvMinutes1DK = formatTimestamp(latestRecord.minutes1DK)
+            lastLoadedMinutes1DK = formatTimestamp(latestRecord.minutes1DK)
             csvServicePowerSystemRecord.saveRecord(latestRecord)
 
             val avgRecord = PowerSystemCalculations.calculateAverages(response.records)
