@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory
 fun main() = runBlocking {
     val logger = LoggerFactory.getLogger("Main")
     val powerSystemService = PowerSystemService()
-    val csvServicePowerSystemRecord = CsvService(PowerSystemRecord::class, "power_system_data.csv")
-    val csvServicePowerSystemAvgRecord = CsvService(PowerSystemAvgRecord::class, "power_system_avg_data.csv")
+    val csvServicePowerSystemRecord = CsvService(PowerSystemRecord::class, "csv/power_system_data.csv")
+    val csvServicePowerSystemAvgRecord = CsvService(PowerSystemAvgRecord::class, "csv/power_system_avg_data.csv")
     val dataCollectionService = DataCollectionService(
         powerSystemService,
         csvServicePowerSystemRecord,
@@ -19,7 +19,6 @@ fun main() = runBlocking {
     
     try {
         logger.info("=== Danish Power System Data Collector ===")
-        logger.info("")
 
         dataCollectionService.start()
         

@@ -11,8 +11,8 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.full.memberProperties
 
 class CsvService<T : Any>(
-    private val dataClass: KClass<T>,
-    private val csvFilePath: String = "power_system_data.csv"
+    dataClass: KClass<T>,
+    csvFilePath: String
 ) {
     
     private val csvFile = File(csvFilePath)
@@ -130,7 +130,7 @@ class CsvService<T : Any>(
             val property = fieldToPropertyMap[fieldName]
             if (property != null) {
                 @Suppress("UNCHECKED_CAST")
-                val value = (property as KProperty1<T, Any?>).get(record)
+                val value = property.get(record)
                 value?.toString() ?: ""
             } else {
                 ""
@@ -145,7 +145,7 @@ class CsvService<T : Any>(
             val minutes1DKProperty = fieldToPropertyMap["Minutes1DK"]
             val recordMinutes1DK = if (minutes1DKProperty != null) {
                 @Suppress("UNCHECKED_CAST")
-                (minutes1DKProperty as KProperty1<T, Any?>).get(record)?.toString() ?: "unknown"
+                minutes1DKProperty.get(record)?.toString() ?: "unknown"
             } else {
                 "unknown"
             }
