@@ -63,9 +63,18 @@ class DataCollectionService(
     }
 
     suspend fun pollApi() : Boolean{
-        val pollMinutes1DK = latestOnApiMinutes1Dk() ?: return false
+        val pollMinutes1DK = latestOnApiMinutes1Dk()
+        if (pollMinutes1DK == null) {
+            return false
+        }
 
-        if (pollMinutes1DK > lastLoadedMinutes1DK!!){
+        val lastLoaded = lastLoadedMinutes1DK
+        if (lastLoaded == null) {
+            logger.warn("lastLoadedMinutes1DK is null, cannot compare timestamps")
+            return false
+        }
+
+        if (pollMinutes1DK > lastLoaded){
             return true
         }
 
